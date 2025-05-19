@@ -22,10 +22,10 @@ public class Page_Ian_ProyectoTienda {
        String productoTrigo = ("Trigo");
        String productoMaiz = ("Maiz");
        
-       int inventarioAzucar = 100;  
-       int inventarioAvena = 100;
-       int inventarioTrigo = 100;
-       int inventarioMaiz = 100;
+       int inventarioAzucar = 0;  
+       int inventarioAvena = 0;
+       int inventarioTrigo = 0;
+       int inventarioMaiz = 0;
        
        double precioAzucar = 30;
        double precioAvena = 25;
@@ -88,23 +88,23 @@ public class Page_Ian_ProyectoTienda {
                    // parte visual para el usuario
                    
                    System.out.println("Caja abierta para uso");
-                   System.out.println("Ingrese cantidad que desea aÃ±adir a la caja");
+                   System.out.println("Ingrese cantidad que desea añadir a la caja");
                    double cantidad = scanner.nextDouble();
                    if (cantidad > 0){
                        caja += cantidad;
-                       System.out.println("Se aÃ±adieron "+ caja + "Lps a la caja");
+                       System.out.println("Se añadieron "+ caja + "Lps a la caja");
                    } else {
                        System.out.println("Cantidad Invalida. No se agregaron los fondos.");
                    }
-               } else { // AÃ±adir dinero extra durante el dÃ­a
+               } else { // Añadir dinero extra durante el día
                        
                     System.out.print("Ingrese cantidad adicional para la caja: ");
                     double cantidad = scanner.nextDouble();
                     if (cantidad > 0) {
                         caja += cantidad;
-                        System.out.println("Se aÃ±adieron " + cantidad + " Lps. Nuevo saldo: " + caja + " Lps");
+                        System.out.println("Se añadieron " + cantidad + " Lps. Nuevo saldo: " + caja + " Lps");
                     } else {
-                        System.out.println("Cantidad invÃ¡lida. No se agregaron fondos.");
+                        System.out.println("Cantidad inválida. No se agregaron fondos.");
                 
                    
                }
@@ -113,9 +113,11 @@ public class Page_Ian_ProyectoTienda {
            //Ventas
            } else if (opcion == 2){ 
                if (!cajaAbierta){
-                   System.out.println("La caja esta cerada o el dia esta cerrado. Seleccione Abrir caja para iniciar");
-               } else {
+                   System.out.println("La caja esta cerrada o el dia esta cerrado. Seleccione Abrir caja para iniciar");
+                   } else if (inventarioAzucar <= 0 && inventarioAvena <= 0 && inventarioTrigo <= 0 && inventarioMaiz <= 0) {
+                    System.out.println("No hay stock disponible de ningún producto. Realice compras primero.");
                    
+                   } else {
                     // Variables para le siguiente venta
 
                 double subtotalVenta = 0;
@@ -288,9 +290,11 @@ public class Page_Ian_ProyectoTienda {
                
                // verificar proveedor
                
-               if (!tipoProveedor.equals("A") && !tipoProveedor.equals("B") && !tipoProveedor.equals("C")){
-                   System.out.println("Tipo de proveedor no valido");
-               }
+               while (!tipoProveedor.equals("A") && !tipoProveedor.equals("B") && !tipoProveedor.equals("C")) {
+                    System.out.println("Tipo de proveedor no válido. Los proveedores disponibles son A, B o C.");
+                    System.out.println("Ingrese tipo de proveedor (A, B, C): ");
+                    tipoProveedor = scanner.next().toUpperCase();
+                }
                
                // Tipo de productos disponibles dependiento del proveedor
                
@@ -359,6 +363,18 @@ public class Page_Ian_ProyectoTienda {
                           caja -= totalCompra;
                           numeroCompras++;
                           totalCompras += totalCompra;
+
+                          // Actualizar el inv
+
+                          if (codigoCompra == 1) {
+                            inventarioAzucar += kgCompra;
+                          } else if (codigoCompra == 2) {
+                            inventarioAvena += kgCompra;
+                          } else if (codigoCompra == 3) {
+                            inventarioTrigo += kgCompra;
+                          } else if (codigoCompra == 4) {
+                            inventarioMaiz += kgCompra;
+                          }
                           
                           if (totalCompra > compraMayorCosto){
                               compraMayorCosto = totalCompra;
