@@ -19,10 +19,10 @@ public class Page_Ian_ProyectoTienda {
         String productoTrigo = "Trigo";
         String productoMaiz = "Maíz";
        
-        int inventarioAzucar = 100;  
-        int inventarioAvena = 100;
-        int inventarioTrigo = 100;
-        int inventarioMaiz = 100;
+        int inventarioAzucar = 0;  
+        int inventarioAvena = 0;
+        int inventarioTrigo = 0;
+        int inventarioMaiz = 0;
        
         double precioAzucar = 30;
         double precioAvena = 25;
