@@ -22,6 +22,11 @@ public class Page_Ian_ProyectoTienda {
        String productoTrigo = ("Trigo");
        String productoMaiz = ("Maiz");
        
+       int inventarioAzucar = 100;  
+       int inventarioAvena = 100;
+       int inventarioTrigo = 100;
+       int inventarioMaiz = 100;
+       
        double precioAzucar = 30;
        double precioAvena = 25;
        double precioTrigo = 32;
@@ -64,7 +69,7 @@ public class Page_Ian_ProyectoTienda {
             // Funcion de el menu principal
        
            if (opcion == 1){
-               if (!diaActivo) {            //Abrir la caja 
+               if (!cajaAbierta) {            //Abrir la caja 
                    cajaAbierta = true; 
                    diaActivo = true;
                                         //Establecer los datos en 0 a inicio de ventas
@@ -83,27 +88,35 @@ public class Page_Ian_ProyectoTienda {
                    // parte visual para el usuario
                    
                    System.out.println("Caja abierta para uso");
-               } else {
-                   System.out.println("Ingrese cantidad que desea añadir a la caja");
+                   System.out.println("Ingrese cantidad que desea aÃ±adir a la caja");
                    double cantidad = scanner.nextDouble();
                    if (cantidad > 0){
                        caja += cantidad;
-                       System.out.println("Se añadieron "+ caja + "Lps a la caja");
+                       System.out.println("Se aÃ±adieron "+ caja + "Lps a la caja");
                    } else {
                        System.out.println("Cantidad Invalida. No se agregaron los fondos.");
                    }
+               } else { // AÃ±adir dinero extra durante el dÃ­a
+                       
+                    System.out.print("Ingrese cantidad adicional para la caja: ");
+                    double cantidad = scanner.nextDouble();
+                    if (cantidad > 0) {
+                        caja += cantidad;
+                        System.out.println("Se aÃ±adieron " + cantidad + " Lps. Nuevo saldo: " + caja + " Lps");
+                    } else {
+                        System.out.println("Cantidad invÃ¡lida. No se agregaron fondos.");
                 
                    
+               }
                }
            
            //Ventas
            } else if (opcion == 2){ 
-               if (!cajaAbierta || !diaActivo){
-                   System.out.println("La caja esta cerada o el dia esta cerrado");
-               }
-           
-           
-                // Variables para le siguiente venta
+               if (!cajaAbierta){
+                   System.out.println("La caja esta cerada o el dia esta cerrado. Seleccione Abrir caja para iniciar");
+               } else {
+                   
+                    // Variables para le siguiente venta
 
                 double subtotalVenta = 0;
                 boolean continuarVenta = true;
@@ -121,10 +134,10 @@ public class Page_Ian_ProyectoTienda {
                      //Los Productos disponibles
 
                      System.out.println("\nProductos disponibles:");
-                     System.out.println("1. "+ productoAzucar + " - Lps" + precioAzucar + "/kg");
-                     System.out.println("2. "+ productoAvena + " - Lps" + precioAvena + "/kg");
-                     System.out.println("3. "+ productoTrigo + " - Lps" + precioTrigo + "/kg");
-                     System.out.println("4. "+ productoMaiz + " - Lps" + precioMaiz + "/kg");
+                     System.out.println("1. "+ productoAzucar + "   " +precioAzucar + "Lps/kg");
+                     System.out.println("2. "+ productoAvena + "   " + precioAvena + "Lps/kg");
+                     System.out.println("3. "+ productoTrigo + "   " + precioTrigo + "Lps/kg");
+                     System.out.println("4. "+ productoMaiz + "   " + precioMaiz + "Lps/kg");
 
                         //Pedir el codigo del producto
 
@@ -171,25 +184,45 @@ public class Page_Ian_ProyectoTienda {
                            System.out.println("Ingrese la cantidad de kilogramos a vender: ");
                            double kg = scanner.nextDouble();
                            
-                           if (kg > 0){
-                               double monto = kg * precioProducto;
-                               subtotalVenta += monto;
-                               
+                           boolean inventarioSuficiente = false;
+                            if (codigoProducto == 1 && kg <= inventarioAzucar) {
+                             inventarioSuficiente = true;
+                            } else if (codigoProducto == 2 && kg <= inventarioAvena) {
+                             inventarioSuficiente = true;
+                            } else if (codigoProducto == 3 && kg <= inventarioTrigo) {
+                             inventarioSuficiente = true;
+                            } else if (codigoProducto == 4 && kg <= inventarioMaiz) {
+                             inventarioSuficiente = true;
+                        }
+    
+                            if (kg > 0 && inventarioSuficiente) {
+                                double monto = kg * precioProducto;
+                                subtotalVenta += monto;
+                                
                                //Actualizar productos vendidos
                                
-                              if (codigoProducto == 1){
-                                  ventasAzucar += kg;
-                              } else if (codigoProducto == 2){
-                                  ventasAvena += kg;
-                              } else if (codigoProducto == 3){
-                                  ventasTrigo += kg;
-                              } else if (codigoProducto == 4){
-                                  ventasMaiz += kg;
+                              if (codigoProducto == 1) {
+                                ventasAzucar += kg;
+                                inventarioAzucar -= kg;
+                              } else if (codigoProducto == 2) {
+                                ventasAvena += kg;
+                                inventarioAvena -= kg;
+                              } else if (codigoProducto == 3) {
+                                ventasTrigo += kg;
+                                inventarioTrigo -= kg;
+                              } else if (codigoProducto == 4) {
+                                ventasMaiz += kg;
+                                inventarioMaiz -= kg;
                               }
-                              System.out.println("Vendido: " + kg + "kg de" + nombreProducto + monto);
+                              System.out.println("Vendido: " + kg + "kg de" + nombreProducto + "-" + monto + "Lps");
                               
                            } else {
-                               System.out.println("Cantidad no valida.");
+                                if (kg <= 0){
+                                    System.out.println("Cantidad no valida.");
+                                } else {
+                                    System.out.println("No hay suficiente inventario para esta venta");
+                                }
+                               
                            }
                            
                        }
@@ -239,15 +272,17 @@ public class Page_Ian_ProyectoTienda {
                             ventaMayorGanancia = gananciaVenta;
                         }
                     }
+               }
+
                 }   
                 
             //compras
             } else if (opcion == 3){
                if (!cajaAbierta || !diaActivo){
                    System.out.println("La caja no esta abieta o el dia esta cerrado");
-               }
-             
-               //tipo de proveedor
+               } else {
+                   
+                   //tipo de proveedor
                System.out.println("Ingrese tipo de proveedor (A, B, C): ");
                String tipoProveedor = scanner.next().toUpperCase();
                
@@ -338,7 +373,8 @@ public class Page_Ian_ProyectoTienda {
                        System.out.println("Cantidad no valida.");
                    }
                }
-           
+            }
+               
            // Reportes
            } else if (opcion == 4){
                if (!cajaAbierta){
@@ -382,8 +418,9 @@ public class Page_Ian_ProyectoTienda {
            } else if (opcion == 5){
                 if (!cajaAbierta){
                     System.out.println("La caja ya esta cerrada.");
-                }
-                System.out.println("\n====< CIERRE DE CAJA >====");
+                } else {
+                    
+                    System.out.println("\n====< CIERRE DE CAJA >====");
                 System.out.println("Total en caja: " + caja + "Lps");
                 
                 //Calculo de ganancia
@@ -410,7 +447,7 @@ public class Page_Ian_ProyectoTienda {
                 cajaAbierta = false;
                 diaActivo = false;
                 System.out.println("Caja cerrada. Para operar nuevamente debe avrir la caja");
-                
+            }
                 
             //Salir del sistemma
             } else if (opcion == 6){
